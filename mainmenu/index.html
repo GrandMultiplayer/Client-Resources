@@ -1,41 +1,66 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
-	<link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
+	<link rel="stylesheet" type="text/css" href="semantic/semantic.min.css">
 	<script
 	  src="https://code.jquery.com/jquery-3.1.1.min.js"
 	  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
 	  crossorigin="anonymous">
 	</script>
-	<script src="semantic/dist/semantic.min.js"></script>
+	<script src="semantic/semantic.min.js"></script>
 	<script src="assets/GrandM.js"></script>
 	<script src="assets/library/sorttable.js"></script>
 	
+	
+	<!-- Style Overrides -->
+	<style>
+	.ui.striped.table tbody tr:nth-child(2n), .ui.striped.table > tr:nth-child(2n) {
+		background-color: rgba(0, 0, 0, 0.2);
+	}
+	
+	.ui.sortable.table thead th:hover {
+		background: rgba(255,255,255,0.75);
+		color: rgba(0, 0, 0, 0.8);
+	}
+	</style>
+	
     <title>Grand Multiplayer</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-	
-	<script>
-	RefeshServers();
-	</script>
 </head>
 
 <body style="background: url('./assets/images/background.jpg') fixed no-repeat center / cover; overflow: hidden;">
 
 	  <!-- Sidemenu -->
-	  <div class="ui visible inverted left wide vertical sidebar fixed menu">
+	  <div class="ui visible inverted left wide vertical sidebar fixed menu" style="background-color: rgba(20, 20, 20, 0.75);">
 		<center><img class="ui medium image" src="./assets/images/Avatar_3.png"></center>
 
 		<br>
-
-		<div class="ui vertical buttons" style="width: 330px; margin-left: 10px;">
-			<button id="GMServersButton" onclick="showServers()" class="inverted blue basic ui button" style="margin-bottom: 5px">Servers</button>
-			<button id="GMOptionsButton" onclick="showOptions()" class="inverted blue basic ui button" style="margin-bottom: 5px">Options</button>
-			<button class="inverted blue basic ui button">Quit</button>
-		</div>
-
-		<br>
+		
+		<a id="GMHomeButton" class="active blue item" onclick="hideHome()">
+			<i class="home icon"></i>
+			Home
+		</a>
+		<a id="GMQuickConnectButton" class="blue item">
+			<i class="plug icon"></i>
+			Quick Connect
+		</a>
+		<a id="GMServersButton" class="blue item" onclick="showServers()">
+			<i class="server icon"></i>
+			Servers
+		</a>
+		<a id="GMOptionsButton" class="blue item" onclick="showOptions()">
+			<i class="settings icon"></i>
+			Settings
+		</a>
+		<a id="GMQuitButton" class="blue item">
+			<i class="power icon"></i>
+			Quit
+		</a>
 	  </div>
 	  <!-- Right -->
-	  <div id="GMServers" class="pusher" style="padding-right: 360px; padding-left: 10px; padding-bottom: 19px; height: 100%; display: none;">
+	  <div id="GMHome" class="pusher" style="margin-right: 360px; margin-left: 10px; padding: 10px 10px 19px 10px; height: 100%; background-color: rgba(20, 20, 20, 0.75);">
+	  </div>
+	  
+	  <div id="GMServers" class="pusher" style="margin-right: 360px; margin-left: 10px; padding: 10px 10px 19px 10px; height: 100%;">
 		
 		<div class="ui stackable four column grid" style="margin:10px 0 0 0; padding: 0; display: table; width: 100%;">
 			<div class="column" style="padding: 3px; width: auto;">
@@ -60,38 +85,51 @@
 			</div>
 		</div>
 		
-		<div class="ui top attached segment" style="padding: 0; background: none;">
-			<table class="ui blue striped table" >
-				<thead>
-					<tr>
-						<th width="54%"><a onclick="sorttable.innerSortFunction.apply(document.getElementById('gmname'), [])">Name</a></th>
-						<th width="18%"><a onclick="sorttable.innerSortFunction.apply(document.getElementById('gmtype'), [])">Gamemode</a></th>
-						<th ><a onclick="sorttable.innerSortFunction.apply(document.getElementById('gmplayers'), [])">Players</a></th>
-						<th width="20%"></th>
-						<th class="right aligned"></th>
+		<div class="ui top attached tabular menu">
+			<a class="item active">
+			Servers
+			</a>
+			<a class="item">
+			<i class="star icon"></i>
+			Favorites
+			</a>
+		</div>
+		<div class="ui bottom attached segment" style="padding: 0px; background: none; border: none;">
+			<table class="ui blue striped table sortable" style="background-color: rgba(20, 20, 20, 0.75); color: #fff;">
+				<thead style="display: table; width: 100%" >
+					<tr style="position: relative;">
+						<th style="width: 54%;">Name</th>
+						<th style="width: 18%;">Gamemode</th>
+						<th >Players</th>
+						<th class="sorttable_nosort" style="width: 20%;"></th>
+						<th class="right aligned sorttable_nosort"></th>
 					</tr>
 				</thead>
-			</table>
-		</div>
-		<div class="ui bottom attached segment" style="height: calc(100% - 110px); display: block; overflow-y: auto; padding: 0">
-			<table id="GMSList" class="ui table striped sortable" >
-				<thead style="height: 0%; visibility: collapse;">
-				<tr>
-					<th id="gmname" width="60%"></th>
-					<th id="gmtype" width="20%"></th>
-					<th id="gmplayers"></th>
-					<th width="20%"></th>
-					<th class="right aligned sorttable_nosort"></th>
-				</tr>
-				</thead>
-				<tbody id="gmServerList">
+			
+				<tbody id="gmServerList" style="height: calc(100vh - 190px); display: block; overflow-y: auto;">
 				</tbody>
 			</table>
 		</div>
 		
+		<!--<div class="ui top attached segment" style="padding: 0; background: none; border: none;">
+			<table class="ui blue striped table sortable" style="background-color: rgba(20, 20, 20, 0.75); color: #fff;">
+				<thead style="display: table; width: 100%" >
+					<tr style="position: relative;">
+						<th style="width: 54%;">Name</th>
+						<th style="width: 18%;">Gamemode</th>
+						<th >Players</th>
+						<th class="sorttable_nosort" style="width: 20%;"></th>
+						<th class="right aligned sorttable_nosort"></th>
+					</tr>
+				</thead>
+			
+				<tbody id="gmServerList" style="height: calc(100vh - 140px); display: block; overflow-y: auto;">
+				</tbody>
+			</table>
+		</div>-->
 	  </div>
 	  
-	  <div id="GMOptions" class="pusher" style="padding-right: 360px; padding-left: 10px; padding-bottom: 19px; height: 100%; display:none">
+	  <div id="GMOptions" class="pusher" style="margin-right: 360px; margin-left: 10px; padding: 10px 10px 19px 10px; height: 100%; display: none; background-color: rgba(20, 20, 20, 0.75);">
 		<div class="ui basic segment" style="margin-top: 10px; height: 100%; background: #fff">
 			<h4 class="ui horizontal centered header"><i class="settings icon"></i>Options</h4>
 			

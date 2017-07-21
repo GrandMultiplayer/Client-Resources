@@ -23,8 +23,10 @@ function RefeshServers()
 		//alert('Total Servers: ' + data.total);
 		var servers = '';
 		
+		//var nameWidth = document.getElementById('serverName').offsetWidth;
+		
 		for (i = 0; i < data.servers.length; i++) {
-			servers += '<tr><td>' + data.servers[i].Name + '</td><td>' + data.servers[i].GameType + '</td><td class="right aligned" style="padding:0;">' + data.servers[i].Players + '</td><td width="50%" style="padding:0;">/' + data.servers[i].MaxPlayers + '</td><td class="right aligned"><p><button class="ui button" onclick="GandM.Connect("' + data.servers[i].IPAddress + '", ' + data.servers[i].Port + ')">Join</button></p></td></tr>'
+			servers += '<tr style="display: table; width: 100%"><td style="width: 54%;">' + data.servers[i].Name + '</td><td style="width: 19%;">' + data.servers[i].GameType + '</td><td class="right aligned" style="padding:0;">' + data.servers[i].Players + '</td><td style="padding:0; width: 14%;">/' + data.servers[i].MaxPlayers + '</td><td class="right aligned"><p><button class="ui button" onclick="GandM.Connect("' + data.servers[i].IPAddress + '", ' + data.servers[i].Port + ')">Connect</button></p></td></tr>'
 		}
 		
 		document.getElementById("gmServerList").innerHTML = servers;
@@ -65,8 +67,13 @@ function showServers(){
 	var myElement = document.getElementById('GMServers');
 	myElement.style.display = '';
 	hideOptions();
+	hideHome();
 	
-	document.getElementById("GMServersButton").onclick = function() { hideServers(); }
+	RefeshServers();
+	
+	var Button = document.getElementById("GMServersButton");
+	Button.classList.add("active");
+	Button.onclick = function() { hideServers(); }
 }
 
 function hideServers(){
@@ -74,7 +81,9 @@ function hideServers(){
 	myElement.style.display = 'none';
 	myElement.onclick = function() { showServers(); }
 	
-	document.getElementById("GMServersButton").onclick = function() { showServers(); }
+	var Button = document.getElementById("GMServersButton");
+	Button.classList.remove("active");
+	Button.onclick = function() { showServers(); }
 }
 
 function showOptions(){
@@ -82,15 +91,41 @@ function showOptions(){
 	var myElement = document.getElementById('GMOptions');
 	myElement.style.display = '';
 	hideServers();
+	hideHome();
 	
-	document.getElementById("GMOptionsButton").onclick = function() { hideOptions(); }
+	var Button = document.getElementById("GMOptionsButton");
+	Button.classList.add("active");
+	Button.onclick = function() { hideOptions(); }
 }
 
 function hideOptions(){
 	var myElement = document.getElementById('GMOptions');
 	myElement.style.display = 'none';
 	
-	document.getElementById("GMOptionsButton").onclick = function() { showOptions(); }
+	var Button = document.getElementById("GMOptionsButton");
+	Button.classList.remove("active");
+	Button.onclick = function() { showOptions(); }
+}
+
+function showHome(){
+	// get a reference to your element, or it's container
+	var myElement = document.getElementById('GMHome');
+	myElement.style.display = '';
+	hideServers();
+	hideOptions();
+	
+	var Button = document.getElementById("GMHomeButton");
+	Button.classList.add("active");
+	Button.onclick = function() { hideHome(); }
+}
+
+function hideHome(){
+	var myElement = document.getElementById('GMHome');
+	myElement.style.display = 'none';
+	
+	var Button = document.getElementById("GMHomeButton");
+	Button.classList.remove("active");
+	Button.onclick = function() { showHome(); }
 }
 
 function updateOption(element, option)
