@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		
+		<!-- Loading screen Styles -->
+		<link href="assets/style/please-wait.css" rel="stylesheet">
+		<link href="assets/style/default.css" rel="stylesheet">
+		<link href="assets/style/loading.css" rel="stylesheet">
+		
+		<!-- Chat Styles -->
+		<link rel="stylesheet" type="text/css" href="assets/style/Chat.css">
+		<link href="assets/style/Roboto.css" rel="stylesheet">
+		
+		<!-- Chat Scripts -->
+		<script src="assets/js/GM.Chat.js"></script>
+		
+		<!-- Menu Styles -->
+		<link rel="stylesheet" type="text/css" href="assets/style/semantic/semantic.min.css">
+		<!-- Style Overrides -->
+		<style>
+		.ui.striped.table tbody tr:nth-child(2n), .ui.striped.table > tr:nth-child(2n) {
+			background-color: rgba(0, 0, 0, 0.2);
+		}
+		
+		.ui.sortable.table thead th:hover {
+			background: rgba(255,255,255,0.75);
+			color: rgba(0, 0, 0, 0.8);
+		}
+		
+		tr:hover {
+			background-color: rgba(32, 132, 207, 0.5) !important;
+		}
+		
+		.branding {
+			position: absolute;
+			top: 0px;
+			right: 0px;
+			width: 32px;
+		}
+		</style>
+		
+		<!-- Menu Scripts -->
+		<script src="assets/style/semantic/semantic.min.js"></script>
+		<script src="assets/js/GM.Menu.js"></script>
+		<script src="assets/js/sorttable.js"></script>
+	</head>
+	<body style="background: none !important;">
+		
+		<!-- Loading Screen -->
+		<div id="GM.Loading">
+			<img src="assets/images/background.jpg" class="bg">
+			
+			<script type="text/javascript" src="assets/js/please-wait.min.js"></script>
+			<script type="text/javascript">
+				window.loading_screen = window.pleaseWait({
+					logo: "assets/images/logo.png",
+					<!-- backgroundColor: '#f46d3b', -->
+					loadingHtml: "<div class='sk-cube-grid'><div class='sk-cube sk-cube1'></div><div class='sk-cube sk-cube2'></div><div class='sk-cube sk-cube3'></div><div class='sk-cube sk-cube4'></div><div class='sk-cube sk-cube5'></div><div class='sk-cube sk-cube6'></div><div class='sk-cube sk-cube7'></div><div class='sk-cube sk-cube8'></div><div class='sk-cube sk-cube9'></div></div><p  id='loading-message' class='loading-message' style='color: #fff; font-size: 20px;'></p>"
+				});
+			</script>
+		</div>
+		
+		<!-- Main Menu -->
+		<div id="GM.Menu" style="display: none;">
+			<!-- Sidemenu -->
+			<div class="ui visible inverted left wide vertical sidebar fixed menu" style="background-color: rgba(20, 20, 20, 0.75);">
+				<center><img class="ui medium image" src="./assets/images/logo.png"></center>
+
+				<br>
+
+				<a id="GMHomeButton" class="active blue item" onclick="DisplayHome(false)">
+					<i class="home icon"></i>
+					Home
+				</a>
+				<a id="GMQuickConnectButton" class="blue item" onclick="DisplayQuickConnect(true)">
+					<i class="plug icon"></i>
+					Quick Connect
+				</a>
+				<a id="GMServersButton" class="item blue" onclick="DisplayServerList(true)">
+					<i class="server icon"></i>
+					Servers
+				</a>
+				<a id="GMOptionsButton" class="item blue" onclick="DisplayOptions(true)">
+					<i class="settings icon"></i>
+					Settings
+				</a>
+				<a id="GMQuitButton" class="blue item" onclick="GrandM.Quit()">
+					<i class="power icon"></i>
+					Quit
+				</a>
+			</div>
+
+			<!-- Quick Connect Modal -->
+			<div class="ui mini modal quickconnect" >
+				<i class="close icon"></i>
+				<div class="header">
+					<i class="plug icon"></i>
+					Quick Connect
+				</div>
+				<div class="content">
+					<div class="ui fluid labeled input">
+						<div class="ui label">
+							Address:
+						</div>
+						<input id="modal.address" placeholder="127.0.0.1" type="text">
+					</div>
+					
+					<br>
+					
+					<div class="ui fluid labeled input">
+						<div class="ui label">
+							Port:
+						</div>
+						<input id="modal.port" placeholder="2322" type="number" onkeypress="return isNumberKey(event)">
+					</div>
+				</div>
+				<div class="actions">
+					<div class="ui red button" onclick="DisplayQuickConnect(false)">Back</div>
+					<div class="ui green button" onclick="GrandM.Connect(document.getElementById('modal.address').value, parseInt(document.getElementById('modal.port').value))">Connect</div>
+				</div>
+			</div>
+			
+			
+			<!-- Info Modal, When your kicked or timmed out ect -->
+			<div class="ui tiny modal connection" >
+				<i class="close icon"></i>
+				<div id="connectionerror.title" class="header">
+					<i class="server icon"></i>
+					Connection Closed
+				</div>
+				<div class="content">
+					<p id="connectionerror.text">Connection lost: Server timmedout.</p>
+				</div>
+				<div class="actions">
+					<div class="ui red button" onclick="DisplayConnectionError(false)">Close</div>
+					<div class="ui green button" onclick="GrandM.Connect(document.getElementById('modal.address').value, parseInt(document.getElementById('modal.port').value))">Retry</div>
+				</div>
+			</div>
+
+			<!-- Home -->
+			<div id="GMHome" class="pusher" style="margin-right: 360px; margin-left: 10px; padding: 10px 10px 19px 10px; height: 100%; background-color: rgba(20, 20, 20, 0.75);">
+				<p>Welcome to Grand Multiplayer</p>
+			</div>
+
+			<!-- Servers -->
+			<div id="GMServers" class="pusher" style="margin-right: 360px; margin-left: 10px; padding: 10px 10px 19px 10px; height: 100%; display: none;">
+				<div class="ui stackable four column grid" style="margin:10px 0 0 0; padding: 0; display: table; width: 100%;">
+					<div class="column" style="padding: 3px; width: auto;">
+						<div class="ui blue button" onclick="RefeshServers()"><i class="left icon refresh"></i>Refresh</div>
+					</div>
+					<div class="column" style="padding: 3px;">
+						<div class="ui labeled input" style="left: 10px">
+							<div class="ui blue label link" onclick="serverSearch()">
+								Search
+							</div>
+							<input id="serverSearch" placeholder="search" type="text" onkeyup="serverSearch()">
+						</div>
+					</div>
+					<div class="column" style="padding: 3px; width: 100%; display: table-cell;"></div>
+					<div class="column" style="padding: 3px; display: table-cell; width: auto;">
+						<div class="ui left floated labeled input" style="float: right;">
+							<div class="ui blue label">
+								IGN
+							</div>
+							<input id="SLplayerName" placeholder="playername" type="text" onkeyup="GrandM.SetOption('name', this.value)">
+						</div>
+					</div>
+				</div>
+
+				<div class="ui inverted top attached tabular menu" style="background-color: rgba(20, 20, 20, 0.75);">
+					<a class="item blue active">
+						Servers
+					</a>
+					<a class="item blue disabled">
+						<i class="star icon"></i>
+						Favorites
+					</a>
+					<a id="totals" class="item blue right aligned disabled">
+						0 Servers
+					</a>
+				</div>
+				
+				<!-- Server List -->
+				<div class="ui inverted bottom attached segment" style="padding: 0px; background: none; border: none; border-top-style: solid; border-top-color: #2185d0;">
+					<table id="ServerList" class="ui inverted striped table sortable" style="background-color: rgba(20, 20, 20, 0.75);">
+						<thead style="display: table; width: 100%;" >
+							<tr style="position: relative; color: #fff; background-color: #2185d0;">
+								<th id="fav" class="sorttable_nosort" ></th>
+								<th id="name" style="width: 54%; color: #fff;">Name</th>
+								<th id="gamemode" style="width: 18%; color: #fff;">Gamemode</th>
+								<th id="players" style="color: #fff;" class="sorttable_numeric">Players</th>
+								<th id="ping" class="right aligned sorttable_nosort" style="color: #fff;">Ping</th>
+							</tr>
+						</thead>
+						<tbody id="gmServerList" style="height: calc(100vh - 230px); display: block; overflow-y: auto;">
+						</tbody>
+					</table>
+					
+					<a id="GMConnect" class="ui button right floated blue disabled" onclick='if(selectedRow){GrandM.Connect($(selectedRow).data("ip"), $(selectedRow).data("port"));}'>
+						<i class="plug icon"></i>
+						Connect
+					</a>
+				</div>
+			</div>
+			
+			<!-- Options -->
+			<div id="GMOptions" class="pusher" style="margin-right: 360px; margin-left: 10px; padding: 10px 10px 19px 10px; height: 100%; display: none; background-color: rgba(20, 20, 20, 0.75);">
+				<br>
+				<h4 class="ui inverted centered header"><i class="settings icon"></i>Settings</h4>
+
+				<div class="ui inverted top attached tabular menu" style="background: none;">
+					<a id="bO.Profile" class="item blue active" onclick="optionsTab(this, 'o.profile')">
+						Profile
+					</a>
+					<a id="bO.Settings" class="item blue" onclick="optionsTab(this, 'o.settings')">
+						Settings
+					</a>
+				</div>
+				
+				<div id="o.profile" class="ui inverted attached segment" style="padding: 0px; background: none; border: none; border-top-style: solid; border-top-color: #2185d0;">
+					<div class="ui grid">
+						<div class="two column row">
+							<div class="column">
+								<div class="ui segment">
+									<h4 class="ui centered header">
+										User
+									</h4>
+									
+									<div class="ui clearing divider"></div>
+									
+									<div class="ui fluid labeled input">
+										<div class="ui label">
+											Nickname:
+										</div>
+										<input id="o.nickname" placeholder="player" type="text">
+									</div>
+								</div>
+							</div>
+							<div class="column">
+								<div class="ui segment">
+									<h4 class="ui centered header">
+										Quick Connect
+									</h4>
+									
+									<div class="ui clearing divider"></div>
+									
+									<div class="ui fluid labeled input">
+										<div class="ui label">
+											Address:
+										</div>
+										<input id="o.address" placeholder="127.0.0.1" type="text">
+									</div>
+									
+									<br>
+									
+									<div class="ui fluid labeled input">
+										<div class="ui label">
+											Port:
+										</div>
+										<input id="o.port" placeholder="2232" type="text" onkeypress="return isNumberKey(event)">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			
+				<div id="o.settings" class="ui inverted bottom attached segment" style="padding: 0px; background: none; border: none; border-top-style: solid; border-top-color: #2185d0; display: none;">
+					<div class="three column stackable ui grid">
+						<div class="column">
+							<div class="ui segment">
+								<h4 class="ui centered header">
+									Game
+								</h4>
+								
+								<div class="ui clearing divider"></div>
+								
+								<div id="o.editor" class="ui checkbox oeditor">
+									<input type="checkbox">
+									<label>Editor</label>
+								</div>
+								
+								
+							</div>
+						</div>
+						
+						<div class="column">
+							<div class="ui segment">
+								<h4 class="ui centered header">
+									Chat
+								</h4>
+								
+								<div class="ui clearing divider"></div>
+								
+								<div id="o.chatvisible" class="ui checkbox ochatvisible">
+									<input type="checkbox">
+									<label>Chat Visible</label>
+								</div>
+								
+								<br><br>
+								
+								<div id="o.chatsize" class="ui compact selection dropdown ochatsize">
+									<input name="size" type="hidden">
+									<i class="dropdown icon"></i>
+									<div class="default text">Size</div>
+									<div class="menu">
+										<div class="item" data-value="-5">15</div>
+										<div class="item" data-value="-4">16</div>
+										<div class="item" data-value="-3">17</div>
+										<div class="item" data-value="-2">18</div>
+										<div class="item" data-value="-1">19</div>
+										<div class="item" data-value="0">20</div>
+										<div class="item" data-value="1">21</div>
+										<div class="item" data-value="2">22</div>
+										<div class="item" data-value="3">23</div>
+										<div class="item" data-value="4">24</div>
+										<div class="item" data-value="5">25</div>
+									</div>
+								</div>
+								    Font Size
+								<script>
+								$('.ui.dropdown')
+								  .dropdown()
+								;
+								</script>
+								
+								<br><br>
+								
+								<div class="ui fluid labeled input">
+									<div class="ui label">
+										Max Visible Messages:
+									</div>
+									<!-- onkeyup="this.value = minmax(this.value, 5, 50);" -->
+									<input id="o.messagecount" placeholder="10" type="number" onkeypress="return isNumberKey(event);">
+								</div>
+							</div>
+						</div>
+						
+						<div class="column">
+							<div class="ui segment">
+								<h4 class="ui centered header">
+									Debug
+								</h4>
+								
+								<div class="ui clearing divider"></div>
+								
+								<div id="o.debugui" class="ui checkbox odebugui">
+									<input type="checkbox">
+									<label>Display Debug UI</label>
+								</div>
+								
+								<br><br>
+								
+								<div id="o.debuglog" class="ui checkbox odebuglog">
+									<input type="checkbox">
+									<label>Enable Debug Logs</label>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="ui inverted bottom attached segment" style="padding: 0px; background: none; border: none;">
+					<div class="ui inverted vertical segment" style="background: none;">
+						<button class="ui centered primary button" onclick="SaveOptions();">
+							Save
+						</button>
+						<button class="ui centered red button" onclick="GrandM.LoadConfig(); fetchOptions();">
+							Discard
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Chat -->
+		<div id="GM.Chat" style="display: none;">
+			<img src="assets/images/icon.png" class="branding"/>
+			<div id="chat-container">
+				<div id="chat-history">
+					<ul>
+					</ul>
+				</div>
+
+				<div id="chat-input">
+					<input dir="auto" id="chat-input-message" type="text">
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
