@@ -45,14 +45,13 @@ function RefeshServers() {
 		var pwidth = document.getElementById("players").offsetWidth;
 		var mwidth = document.getElementById("ping").offsetWidth;
 		
+		$("#gmServerList").empty();
 		
 		for (i = 0; i < data.servers.length; i++) {
-			servers += '<tr data-ip="' + data.servers[i].IPAddress + '" data-port="' + data.servers[i].Port + '" style="display: table; width: 100%"><td width="'+ fwidth + '"><i class="star icon disabled"></i></td><td width="'+ nwidth + '">' + data.servers[i].Name + '</td><td width="'+ gwidth + '">' + data.servers[i].Gamemode + '</td><td width="'+ pwidth + '" sorttable_customkey="' + data.servers[i].Players + '">' + data.servers[i].Players + ' / ' + data.servers[i].MaxPlayers + '</td><td width="'+ mwidth + '" class="right aligned"><p>999ms</p></td></tr>'
+			$("#gmServerList").append('<tr data-ip="' + data.servers[i].IPAddress + '" data-port="' + data.servers[i].Port + '" style="display: table; width: 100%"><td width="'+ fwidth + '"><i class="star icon disabled"></i></td><td width="'+ nwidth + '">' + data.servers[i].Name + '</td><td width="'+ gwidth + '">' + data.servers[i].Gamemode + '</td><td width="'+ pwidth + '" sorttable_customkey="' + data.servers[i].Players + '">' + data.servers[i].Players + ' / ' + data.servers[i].MaxPlayers + '</td><td width="'+ mwidth + '" class="right aligned"><p>999ms</p></td></tr>')
 		}
 		
-		document.getElementById("gmServerList").innerHTML = servers;
-		
-		 $('tr').dblclick(function () {
+		$('tr').dblclick(function () {
 			var ip = $(this).data("ip");
 			var port = $(this).data("port");
 			
@@ -126,7 +125,6 @@ function DisplayServerList(state){
 	else {
 		var myElement = document.getElementById('GMServers');
 		myElement.style.display = 'none';
-		myElement.onclick = function() { showServers(); }
 
 		var Button = document.getElementById("GMServersButton");
 		Button.classList.remove("active");

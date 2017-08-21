@@ -5,7 +5,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 		
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="assets/js/jquery.min.js"></script>
 		
 		<!-- Loading screen Styles -->
 		<link href="assets/style/please-wait.css" rel="stylesheet">
@@ -32,14 +32,14 @@
 			color: rgba(0, 0, 0, 0.8);
 		}
 		
-		tr:hover {
-			background-color: rgba(32, 132, 207, 0.5) !important;
+		tr:hover td {
+			background-color: rgba(255, 255, 255, 0.08) !important;
 		}
 		
 		.branding {
 			position: absolute;
-			top: 0px;
-			right: 0px;
+			top: 5px;
+			right: 5px;
 			width: 32px;
 		}
 		</style>
@@ -107,7 +107,7 @@
 						<div class="ui label">
 							Address:
 						</div>
-						<input id="modal.address" placeholder="127.0.0.1" type="text">
+						<input id="modal.address" placeholder="127.0.0.1" type="text" onkeyup="GrandM.SetOption('ip', this.value)">
 					</div>
 					
 					<br>
@@ -116,7 +116,7 @@
 						<div class="ui label">
 							Port:
 						</div>
-						<input id="modal.port" placeholder="2322" type="number" onkeypress="return isNumberKey(event)">
+						<input id="modal.port" placeholder="2322" type="number" onkeypress="return isNumberKey(event)" onkeyup="GrandM.SetOption('port', parseInt(this.value))">
 					</div>
 				</div>
 				<div class="actions">
@@ -126,7 +126,7 @@
 			</div>
 			
 			
-			<!-- Info Modal, When your kicked or timmed out ect -->
+			<!-- Connection Modal -->
 			<div class="ui tiny modal connection" >
 				<i class="close icon"></i>
 				<div id="connectionerror.title" class="header">
@@ -138,7 +138,7 @@
 				</div>
 				<div class="actions">
 					<div class="ui red button" onclick="DisplayConnectionError(false)">Close</div>
-					<div class="ui green button" onclick="GrandM.Connect(document.getElementById('modal.address').value, parseInt(document.getElementById('modal.port').value))">Retry</div>
+					<div class="ui green button" onclick="GrandM.Retry()">Retry</div>
 				</div>
 			</div>
 
@@ -165,7 +165,7 @@
 					<div class="column" style="padding: 3px; display: table-cell; width: auto;">
 						<div class="ui left floated labeled input" style="float: right;">
 							<div class="ui blue label">
-								IGN
+								Name
 							</div>
 							<input id="SLplayerName" placeholder="playername" type="text" onkeyup="GrandM.SetOption('name', this.value)">
 						</div>

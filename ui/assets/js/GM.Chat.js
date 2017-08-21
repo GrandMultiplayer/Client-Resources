@@ -104,6 +104,11 @@ function ShowChatMessage(message) {
 	return message;
 }
 
+function ClearChatMessages() {
+	$("#chat-history ul").empty();
+	UpdateHistory();
+}
+
 function InitializeChat(data) {
 	chat = data;
 	$("#chat-history").css("font-family", "'" + chat.font + "', 'Roboto', sans-serif");
