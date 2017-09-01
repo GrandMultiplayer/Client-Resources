@@ -1,3 +1,5 @@
+var ClientVersion = "1.0.000000"
+
 var getJSON = function(url, callback) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);
@@ -29,7 +31,7 @@ function minmax(value, min, max)  {
 }
 
 function RefeshServers() {
-	getJSON('https://api.grand-multiplayer.com/gmmasterlist/',
+	getJSON('https://api.grand-multiplayer.com/masterlist/',
 	function(err, data) {
 	  if (err != null) {
 		alert('Something went wrong: ' + err);
@@ -144,6 +146,12 @@ function DisplayOptions(state) {
 		Button.classList.add("active");
 		Button.onclick = function() { DisplayOptions(false); }
 		
+		Button = document.getElementById("GMOptionsSettingsButton");
+		Button.style.display = '';
+		
+		Button = document.getElementById("GMOptionsGameButton");
+		Button.style.display = '';
+		
 		fetchOptions();
 	}
 	else {
@@ -153,6 +161,12 @@ function DisplayOptions(state) {
 		var Button = document.getElementById("GMOptionsButton");
 		Button.classList.remove("active");
 		Button.onclick = function() { DisplayOptions(true); }
+		
+		Button = document.getElementById("GMOptionsSettingsButton");
+		Button.style.display = 'none';
+		
+		Button = document.getElementById("GMOptionsGameButton");
+		Button.style.display = 'none';
 	}
 }
 
@@ -185,34 +199,34 @@ function fetchOptions() {
 	GetOption(document.getElementById('o.port'), "port");
 	
 	if(GrandM.GetOption("editor")) {
-		$('.checkbox.oeditor').checkbox('set checked');
+		document.getElementById('o.editor').checked = true;
 	}
 	else {
-		$('.checkbox.oeditor').checkbox('set unchecked');
+		document.getElementById('o.editor').checked = false;
 	}
 	
 	if(GrandM.GetOption("debugui")) {
-		$('.checkbox.odebugui').checkbox('set checked');
+		document.getElementById('o.debugui').checked = true;
 	}
 	else {
-		$('.checkbox.odebugui').checkbox('set unchecked');
+		document.getElementById('o.debugui').checked = false;
 	}
 	
 	if(GrandM.GetOption("debuglog")) {
-		$d('.checkbox.odebuglog').checkbox('set checked');
+		document.getElementById('o.debuglogs').checked = true;
 	}
 	else {
-		$('.checkbox.odebuglog').checkbox('set unchecked');
+		document.getElementById('o.debuglogs').checked = false;
 	}
 	
 	if(GrandM.GetOption("chatvisible")) {
-		$('.checkbox.ochatvisible').checkbox('set checked');
+		document.getElementById('o.chatvisible').checked = true;
 	}
 	else {
-		$('.checkbox.ochatvisible').checkbox('set unchecked');
+		document.getElementById('o.chatvisible').checked = false;
 	}
 	
-	$('.dropdown.ochatsize').dropdown('set selected', GrandM.GetOption("chatsize").toString());
+	document.getElementById('o.chatsize').value = GrandM.GetOption("chatsize").toString();
 	
 	GetOption(document.getElementById('o.messagecount'), "chatmessagecount");
 }
@@ -222,15 +236,15 @@ function SaveOptions() {
 	GrandM.SetOption("ip", document.getElementById('o.address').value);
 	GrandM.SetOption("port", parseInt(document.getElementById('o.port').value));
 	
-	GrandM.SetOption("editor", $('.checkbox.oeditor').checkbox('is checked'));
+	GrandM.SetOption("editor", document.getElementById('o.editor').checked);
 	
-	GrandM.SetOption("debugui", $('.checkbox.odebugui').checkbox('is checked'));
+	GrandM.SetOption("debugui", document.getElementById('o.debugui').checked);
 	
-	GrandM.SetOption("debuglog", $('.checkbox.odebuglog').checkbox('is checked'));
+	GrandM.SetOption("debuglog", document.getElementById('o.debuglogs').checked);
 	
-	GrandM.SetOption("chatvisible", $('.checkbox.ochatvisible').checkbox('is checked'));
+	GrandM.SetOption("chatvisible", document.getElementById('o.chatvisible').checked);
 	
-	GrandM.SetOption("chatsize", parseInt($('.dropdown.ochatsize').dropdown('get value')));
+	GrandM.SetOption("chatsize", parseInt(document.getElementById('o.chatsize').value));
 	
 	GrandM.SetOption("chatmessagecount", parseInt(document.getElementById('o.messagecount').value));
 	
@@ -241,25 +255,16 @@ function optionsTab(object, opentab) {
 	if(!object.classList.contains("active")) {
 		object.classList.add("active");
 		
-		if(opentab == 'o.profile') {
-			var button = document.getElementById("bO.Settings");
+		if(opentab == 'o.settings') {
+			var button = document.getElementById("GMOptionsProfileButton");
 			button.classList.remove("active");
 			
 			var element = document.getElementById(opentab);
 			element.style.display = '';
-			
-			element = document.getElementById('o.settings');
-			element.style.display = 'none';
 		}
-		else if(opentab == 'o.settings') {
-			var button = document.getElementById("bO.Profile");
-			button.classList.remove("active");
-			
-			var element = document.getElementById(opentab);
-			element.style.display = '';
-			
-			element = document.getElementById('o.profile');
-			element.style.display = 'none';
+		else if(opentab == 'o.game') {
+			DisplayMainMenu(false);
+			GrandM.ShowGameSettings();
 		}
 	}
 }
@@ -368,4 +373,16 @@ function Quit() {
 
 function setLoadingMessage(inText) {
 	document.getElementById("loading-message").innerHTML = inText;
+}
+
+function RockstarEditor(){
+	DisplayMainMenu(false);
+	GrandM.RockstarEditor();
+}
+
+function SetVersion(version){
+	ClientVersion = version;
+	
+	var v = document.getElementById('version')
+	v.innerHTML = ClientVersion;
 }

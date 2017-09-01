@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- <html style="font-size: 10px; font-size: 0.7vw; font-family: Roboto,Arial,sans-serif;"> -->
 <html>
 	<head>
 		<meta charset="utf-8">
@@ -21,8 +22,20 @@
 		
 		<!-- Menu Styles -->
 		<link rel="stylesheet" type="text/css" href="assets/style/semantic/semantic.min.css">
+		
 		<!-- Style Overrides -->
 		<style>
+		html {
+			font-size: 0.7vw !important;
+			font-family: Roboto,Arial,sans-serif;
+		}
+		
+		@media screen and (max-width: 1430px) {
+			html { 
+				font-size: 10px !important;
+			}
+		}
+		
 		.ui.striped.table tbody tr:nth-child(2n), .ui.striped.table > tr:nth-child(2n) {
 			background-color: rgba(0, 0, 0, 0.2);
 		}
@@ -32,16 +45,92 @@
 			color: rgba(0, 0, 0, 0.8);
 		}
 		
+		.ui.input {
+			font-size: 0.7vw;
+			font-family: Roboto,Arial,sans-serif;
+		}
+		
+		@media screen and (max-width: 1430px) {
+			.ui.input { font-size: 10px; }
+		}
+		
 		tr:hover td {
 			background-color: rgba(255, 255, 255, 0.08) !important;
 		}
 		
 		.branding {
 			position: absolute;
-			top: 5px;
+			bottom: 5px;
 			right: 5px;
 			width: 32px;
 		}
+		
+		.grandmui {
+			outline: none;
+			height: 100vh;
+			width: 100vw;
+			border: none;
+		}
+		
+		.ui.table thead tr:first-child > th:last-child {
+			border-radius: 0 !important;
+		}
+		
+		.ui.table thead tr:first-child > th:first-child {
+			border-radius: 0 !important;
+		}
+		
+		#version {
+			display: block;
+			position: relative;
+			top: -118px;
+			left: 240px;
+			color: rgba(255, 255, 255, 0.5);
+			width: 20px;
+		}
+		
+		.ui.grid>.row>.column {
+			margin-top: 2px;
+			margin-bottom: 2px;
+		}
+		
+		.settings.input {
+			text-align: right;
+			background: none;
+			color: #fff;
+			border: 0;
+		}
+		
+		.setting tr {
+			font-family: Roboto,Arial,sans-serif;
+			font-size: 0.7vw !important;
+			width: 100%;
+			color: #fff;
+			border: none;
+		}
+		
+		.setting td {
+			width: 50%;
+			color: #fff;
+			padding: 2.5px 10px 2.5px 10px;
+			border: none;
+			margin: 0;
+		}
+		
+		.setting td>input {
+			float: right;
+		}
+		
+		.setting td>select {
+			float: right;
+		}
+		
+		@media screen and (max-width: 1430px) {
+			.setting tr { 
+				font-size: 10px !important;
+			}
+		}
+		
 		</style>
 		
 		<!-- Menu Scripts -->
@@ -49,8 +138,7 @@
 		<script src="assets/js/GM.Menu.js"></script>
 		<script src="assets/js/sorttable.js"></script>
 	</head>
-	<body style="background: none !important;">
-		
+	<body style="background: none !important;"> 
 		<!-- Loading Screen -->
 		<div id="GM.Loading">
 			<img src="assets/images/background.jpg" class="bg">
@@ -70,27 +158,36 @@
 			<!-- Sidemenu -->
 			<div class="ui visible inverted left wide vertical sidebar fixed menu" style="background-color: rgba(20, 20, 20, 0.75);">
 				<center><img class="ui medium image" src="./assets/images/logo.png"></center>
-
-				<br>
-
+				<p id="version">1.0.000000</p>
+				
 				<a id="GMHomeButton" class="active blue item" onclick="DisplayHome(false)">
-					<i class="home icon"></i>
+					<!-- <i class="home icon"></i> -->
 					Home
 				</a>
 				<a id="GMQuickConnectButton" class="blue item" onclick="DisplayQuickConnect(true)">
-					<i class="plug icon"></i>
+					<!-- <i class="plug icon"></i> -->
 					Quick Connect
 				</a>
 				<a id="GMServersButton" class="item blue" onclick="DisplayServerList(true)">
-					<i class="server icon"></i>
+					<!-- <i class="server icon"></i> -->
 					Servers
 				</a>
 				<a id="GMOptionsButton" class="item blue" onclick="DisplayOptions(true)">
-					<i class="settings icon"></i>
+					<!-- <i class="settings icon"></i> -->
 					Settings
 				</a>
+				<a id="GMOptionsGameButton" class="item" onclick="optionsTab(this, 'o.game')" style="padding-left:3em; display: none;">
+					Game Settings
+				</a>
+				<a id="GMOptionsSettingsButton" class="item active" onclick="optionsTab(this, 'o.settings')" style="padding-left:3em; display: none;">
+					Settings
+				</a>
+				<a id="GMRockstarEditorButton" class="item blue" onclick="RockstarEditor()">
+					<!-- <i class="film icon"></i> -->
+					Rockstar Editor
+				</a>
 				<a id="GMQuitButton" class="blue item" onclick="GrandM.Quit()">
-					<i class="power icon"></i>
+					<!-- <i class="power icon"></i> -->
 					Quit
 				</a>
 			</div>
@@ -138,7 +235,7 @@
 				</div>
 				<div class="actions">
 					<div class="ui red button" onclick="DisplayConnectionError(false)">Close</div>
-					<div class="ui green button" onclick="GrandM.Retry()">Retry</div>
+					<div class="ui green button" onclick="DisplayConnectionError(false); GrandM.Retry();">Retry</div>
 				</div>
 			</div>
 
@@ -209,164 +306,105 @@
 			</div>
 			
 			<!-- Options -->
-			<div id="GMOptions" class="pusher" style="margin-right: 360px; margin-left: 10px; padding: 10px 10px 19px 10px; height: 100%; display: none; background-color: rgba(20, 20, 20, 0.75);">
-				<br>
-				<h4 class="ui inverted centered header"><i class="settings icon"></i>Settings</h4>
-
-				<div class="ui inverted top attached tabular menu" style="background: none;">
-					<a id="bO.Profile" class="item blue active" onclick="optionsTab(this, 'o.profile')">
-						Profile
-					</a>
-					<a id="bO.Settings" class="item blue" onclick="optionsTab(this, 'o.settings')">
-						Settings
-					</a>
-				</div>
-				
-				<div id="o.profile" class="ui inverted attached segment" style="padding: 0px; background: none; border: none; border-top-style: solid; border-top-color: #2185d0;">
-					<div class="ui grid">
-						<div class="two column row">
-							<div class="column">
-								<div class="ui segment">
-									<h4 class="ui centered header">
-										User
-									</h4>
-									
-									<div class="ui clearing divider"></div>
-									
-									<div class="ui fluid labeled input">
-										<div class="ui label">
-											Nickname:
-										</div>
-										<input id="o.nickname" placeholder="player" type="text">
-									</div>
-								</div>
-							</div>
-							<div class="column">
-								<div class="ui segment">
-									<h4 class="ui centered header">
-										Quick Connect
-									</h4>
-									
-									<div class="ui clearing divider"></div>
-									
-									<div class="ui fluid labeled input">
-										<div class="ui label">
-											Address:
-										</div>
-										<input id="o.address" placeholder="127.0.0.1" type="text">
-									</div>
-									
-									<br>
-									
-									<div class="ui fluid labeled input">
-										<div class="ui label">
-											Port:
-										</div>
-										<input id="o.port" placeholder="2232" type="text" onkeypress="return isNumberKey(event)">
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
+			<div id="GMOptions" class="pusher" 
+			style="margin-right: 380px; margin-left: 30px; margin-top: 20px; padding: 10px 0px 19px 0px; height: 100%; display: none; background: none;">
 			
-				<div id="o.settings" class="ui inverted bottom attached segment" style="padding: 0px; background: none; border: none; border-top-style: solid; border-top-color: #2185d0; display: none;">
-					<div class="three column stackable ui grid">
-						<div class="column">
-							<div class="ui segment">
-								<h4 class="ui centered header">
-									Game
-								</h4>
-								
-								<div class="ui clearing divider"></div>
-								
-								<div id="o.editor" class="ui checkbox oeditor">
-									<input type="checkbox">
-									<label>Editor</label>
-								</div>
-								
-								
-							</div>
-						</div>
-						
-						<div class="column">
-							<div class="ui segment">
-								<h4 class="ui centered header">
-									Chat
-								</h4>
-								
-								<div class="ui clearing divider"></div>
-								
-								<div id="o.chatvisible" class="ui checkbox ochatvisible">
-									<input type="checkbox">
-									<label>Chat Visible</label>
-								</div>
-								
-								<br><br>
-								
-								<div id="o.chatsize" class="ui compact selection dropdown ochatsize">
-									<input name="size" type="hidden">
-									<i class="dropdown icon"></i>
-									<div class="default text">Size</div>
-									<div class="menu">
-										<div class="item" data-value="-5">15</div>
-										<div class="item" data-value="-4">16</div>
-										<div class="item" data-value="-3">17</div>
-										<div class="item" data-value="-2">18</div>
-										<div class="item" data-value="-1">19</div>
-										<div class="item" data-value="0">20</div>
-										<div class="item" data-value="1">21</div>
-										<div class="item" data-value="2">22</div>
-										<div class="item" data-value="3">23</div>
-										<div class="item" data-value="4">24</div>
-										<div class="item" data-value="5">25</div>
-									</div>
-								</div>
-								    Font Size
-								<script>
-								$('.ui.dropdown')
-								  .dropdown()
-								;
-								</script>
-								
-								<br><br>
-								
-								<div class="ui fluid labeled input">
-									<div class="ui label">
-										Max Visible Messages:
-									</div>
-									<!-- onkeyup="this.value = minmax(this.value, 5, 50);" -->
-									<input id="o.messagecount" placeholder="10" type="number" onkeypress="return isNumberKey(event);">
-								</div>
-							</div>
-						</div>
-						
-						<div class="column">
-							<div class="ui segment">
-								<h4 class="ui centered header">
-									Debug
-								</h4>
-								
-								<div class="ui clearing divider"></div>
-								
-								<div id="o.debugui" class="ui checkbox odebugui">
-									<input type="checkbox">
-									<label>Display Debug UI</label>
-								</div>
-								
-								<br><br>
-								
-								<div id="o.debuglog" class="ui checkbox odebuglog">
-									<input type="checkbox">
-									<label>Enable Debug Logs</label>
-								</div>
-							</div>
-						</div>
-					</div>
+				<div class="ui inverted attached segment" style="background-color: rgba(20, 20, 20, 0.75); border: none; border-top-style: solid; border-top-color: #2185d0; border-top-width: 5px;">
+					<h3 class="ui centered header blue">Settings</h3>
 				</div>
 				
-				<div class="ui inverted bottom attached segment" style="padding: 0px; background: none; border: none;">
-					<div class="ui inverted vertical segment" style="background: none;">
+				<!-- Profile Settings -->
+				<h4 class="ui centered header blue" style="width: 100%; margin-bottom: 0px; padding-bottom: 10px; padding-top: 10px; background-color: rgba(20, 20, 20, 0.75); border-top-style: solid; border-top-color: #2185d0; border-top-width: 5px;">
+					Profile
+				</h4>
+				
+				<table class="setting" style="width:100%; background-color: rgba(20, 20, 20, 0.75); margin: 0;">
+					<tr>
+						<td>Nickname</td>
+						<td><input id="o.nickname" class="settings input" placeholder="A Grand Player" type="text" style="text-align: right;"></input></td>
+					</tr>
+				</table>
+				
+				<!-- Quick Connect Settings -->
+				<h4 class="ui centered header blue" style="width: 100%; margin-bottom: 0px; padding-bottom: 10px; padding-top: 10px; background-color: rgba(20, 20, 20, 0.75); border-top-style: solid; border-top-color: #2185d0; border-top-width: 5px;">
+					Quick Connect
+				</h4>
+				
+				<table class="setting" style="width:100%; background-color: rgba(20, 20, 20, 0.75); margin: 0;">
+					<tr>
+						<td class="settings">IP</td>
+						<td><input id="o.address" class="settings input" placeholder="127.0.0.1" type="text" style="text-align: right;"></input></td>
+					</tr>
+					<tr>
+						<td>Port</td>
+						<td><input id="o.port" class="settings input" placeholder="2232" type="number" style="text-align: right;" ></input></td>
+					</tr>
+				</table>
+				
+				<!-- UI Settings -->
+				<h4 class="ui centered header blue" style="width: 100%; margin-bottom: 0px; padding-bottom: 10px; padding-top: 10px; background-color: rgba(20, 20, 20, 0.75); border-top-style: solid; border-top-color: #2185d0; border-top-width: 5px;">
+					UI
+				</h4>
+				
+				<table class="setting" style="width:100%; background-color: rgba(20, 20, 20, 0.75); margin: 0;">
+					<tr>
+						<td>Chat Visible</td>
+						<td><input id="o.chatvisible" type="checkbox" checked style="text-align: right;"></input></td>
+					</tr>
+					<tr>
+						<td>Font Size</td>
+						<td>
+							<select id="o.chatsize">
+							   <option value="-5">15</option>
+							   <option value="-4">16</option>
+							   <option value="-3">17</option>
+							   <option value="-2">18</option>
+							   <option value="-1">19</option>
+							   <option value="0">20</option>
+							   <option value="1">21</option>
+							   <option value="2">22</option>
+							   <option value="3">23</option>
+							   <option value="4">24</option>
+							   <option value="5">25</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>Max Visible Messages</td>
+						<td><input id="o.port" class="settings input" value="10" type="number" min="5" max="50" style="text-align: right;" onkeypress="return isNumberKey(event);" ></input></td>
+					</tr>
+				</table>
+				
+				<!-- Game Settings -->
+				<h4 class="ui centered header blue" style="width: 100%; margin-bottom: 0px; padding-bottom: 10px; padding-top: 10px; background-color: rgba(20, 20, 20, 0.75); border-top-style: solid; border-top-color: #2185d0; border-top-width: 5px;">
+					Game
+				</h4>
+				
+				<table class="setting" style="width:100%; background-color: rgba(20, 20, 20, 0.75); margin: 0;">
+					<tr>
+						<td>Editor</td>
+						<td><input id="o.editor" type="checkbox" checked style="text-align: right;"></input></td>
+					</tr>
+				</table>
+				
+				<!-- Debug Settings -->
+				<h4 class="ui centered header blue" style="width: 100%; margin-bottom: 0px; padding-bottom: 10px; padding-top: 10px; background-color: rgba(20, 20, 20, 0.75); border-top-style: solid; border-top-color: #2185d0; border-top-width: 5px;">
+					Debug
+				</h4>
+				
+				<table class="setting" style="width:100%; background-color: rgba(20, 20, 20, 0.75); margin: 0;">
+					<tr>
+						<td>Display Debug UI</td>
+						<td><input id="o.debugui" type="checkbox" checked style="text-align: right;"></input></td>
+					</tr>
+					<tr>
+						<td>Enable Debug Logs</td>
+						<td><input id="o.debuglogs" type="checkbox" checked style="text-align: right;"></input></td>
+					</tr>
+				</table>
+				
+				<div class="ui inverted bottom attached segment" style="margin-top: 20px; padding: 0px; background-color: rgba(20, 20, 20, 0.75); border: none; border-top-style: solid; border-top-color: #2185d0; border-top-width: 5px;">
+					<div class="ui inverted vertical segment" style="background: none; margin-left: auto; margin-right: auto; width: 150px;">
 						<button class="ui centered primary button" onclick="SaveOptions();">
 							Save
 						</button>
@@ -391,6 +429,7 @@
 					<input dir="auto" id="chat-input-message" type="text">
 				</div>
 			</div>
+			<iframe class="grandmui" name="grandm.server.ui" src="about:blank"></iframe> 
 		</div>
 	</body>
 </html>
